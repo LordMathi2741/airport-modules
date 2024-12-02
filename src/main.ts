@@ -4,7 +4,18 @@ import { Transport } from '@nestjs/microservices';
 import { RabbitMQ } from './common/constants';
 
 async function bootstrap() {
-  const app = await NestFactory.createMicroservice(AppModule, {
+  const flightApp = await NestFactory.createMicroservice(AppModule, {
+    transport: Transport.RMQ,
+    options: {
+      urls: [process.env.AMQL_URL],
+      queue:  RabbitMQ.FlightQueue, 
+      queueOptions: {
+        durable: true, 
+      },
+    },
+  });
+
+  const authApp = await NestFactory.createMicroservice(AppModule, {
     transport: Transport.RMQ,
     options: {
       urls: [process.env.AMQL_AUTH_URL],
@@ -14,6 +25,7 @@ async function bootstrap() {
       },
     },
   });
-  await app.listen();
+  await flightApp.listen();
+  await authApp.listen();
 }
 bootstrap();

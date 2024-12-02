@@ -2,11 +2,12 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
 import { User, UserSchema } from './schema/user.schema';
-import { AuthService, IAuthServiceToken } from './services/auth.service';
+import { AuthRepository, IAuthRepositoryToken } from './repositories/auth.repository';
 import { AuthController } from './controller/auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { AuthService, IAuthServiceToken } from './services/auth.service';
 
 @Module({
     imports: [
@@ -23,6 +24,10 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     controllers: [AuthController],
     providers: [
         {
+            provide: IAuthRepositoryToken,
+            useClass: AuthRepository,
+        },
+        {
             provide: IAuthServiceToken,
             useClass: AuthService,
         },
@@ -30,6 +35,6 @@ import { JwtStrategy } from './strategies/jwt.strategy';
         JwtStrategy,
         
     ],
-    exports: [IAuthServiceToken],
+    exports: [IAuthRepositoryToken, IAuthServiceToken],
 })
 export class AuthModule {}

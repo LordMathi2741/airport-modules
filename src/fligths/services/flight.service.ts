@@ -3,29 +3,34 @@ import { IFlightService } from "./iflight.service";
 import { FlightResponseDTO } from "../dto/flight-response.dto";
 import { IFlightRepository } from "../repositories/iflight.repository";
 import { IFlightRepositoryToken } from "../repositories/flight.repository";
+import { MessagePattern, Payload } from "@nestjs/microservices";
+import { FlightMSG } from "src/common/constants";
+import { FlightRequestDTO } from "../dto/flight-request.dto";
 @Injectable()
 export class FlightService implements IFlightService {
 
     constructor(@Inject(IFlightRepositoryToken) private readonly flightRepository: IFlightRepository) {}
-    async getFlightById(id: string): Promise<FlightResponseDTO> {
-        const flightResponse = await this.flightRepository.getFlightById(id);
-        return flightResponse;
+    @MessagePattern(FlightMSG.GET_FLIGHTS)
+    async getFlights() {
+        return await this.flightRepository.getFlights();
     }
-    async getFlights(): Promise<FlightResponseDTO[]> {
-        const flightsResponse = await this.flightRepository.getFlights();
-        return flightsResponse;
+    @MessagePattern(FlightMSG.GET_FLIGHT_BY_ID)
+    async getFlightById(@Payload() id: string) {
+        return await this.flightRepository.getFlightById(id);
     }
-    async createFlight(flight: FlightResponseDTO): Promise<FlightResponseDTO> {
-        const flightResponse = await this.flightRepository.createFlight(flight);
-        return flightResponse;
+
+    @MessagePattern(FlightMSG.CREATE_FLIGHT)
+    async createFlight(@Payload() flight: FlightRequestDTO) {
+        return await this.flightRepository.createFlight(flight);
     }
-    async updateFlight(id:string, flight: FlightResponseDTO): Promise<FlightResponseDTO> {
-        const flightResponse = await this.flightRepository.updateFlight(id, flight);
-        return flightResponse;
+
+    @MessagePattern(FlightMSG.UPDATE_FLIGHT)
+    async updateFlight(@Payload() payload: any) {
+        return await this.flightRepository.updateFlight(payload.id, payload.flight);
     }
-   async deleteFlight(id: string): Promise<FlightResponseDTO> {
-        const flightResponse = await this.flightRepository.deleteFlight(id);
-        return flightResponse;
+    @MessagePattern(FlightMSG.DELETE_FLIGHT)
+    async deleteFlight(@Payload() id: string) {
+        return await this.flightRepository.deleteFlight(id);
     }
   
 
