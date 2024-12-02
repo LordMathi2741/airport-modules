@@ -17,3 +17,18 @@ export class ClientProxyFlight {
         });
     }
 }
+
+@Injectable()
+export class ClientProxyAuth {
+    constructor(private readonly config: ConfigService){}
+
+    clientProxyAuth(config: ConfigService) : ClientProxy{
+        return ClientProxyFactory.create({
+            transport: Transport.RMQ,
+            options: {
+                urls: this.config.get("AMQL_AUTH_URL"),
+                queue: RabbitMQ.AuthQueue,
+            },
+        });
+    }
+}

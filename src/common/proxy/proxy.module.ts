@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
-import { ClientProxyFlight } from "./client-proxy";
+import { ClientProxyFlight, ClientProxyAuth } from "./client-proxy";
 
 @Module({
-    providers: [ClientProxyFlight],
-    exports: [ClientProxyFlight],
+    providers: [ClientProxyFlight, ClientProxyAuth],
+    exports: [ClientProxyFlight, ClientProxyAuth],
 })
 
 

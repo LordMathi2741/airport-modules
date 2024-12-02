@@ -17,7 +17,7 @@ import { ProxyModule } from 'src/common/proxy/proxy.module';
             useClass: FlightRepository
         },
         {
-            provide: 'IFlightServiceToken',
+            provide: IFlightServiceToken,
             useClass: FlightService
         }
     ],
